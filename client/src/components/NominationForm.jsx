@@ -4,6 +4,7 @@ import Button from './Button';
 import TextInput from './TextInput';
 import { useNavigate } from 'react-router-dom';
 import BackButton from './BackButton';
+import TextInput2 from './TextInput2';
 
 const StyledForm = styled.form`
   display: flex;
@@ -48,12 +49,12 @@ const NominationForm = () => {
         <StyledForm onSubmit={handleSubmit}>
             <BackButton backRoute={handleBack}/>
             <Heading>Nominate a Plant Parent</Heading>
-            <TextInput 
+            <TextInput2 
                 placeholder="Nominee's Name" 
                 value={nomineeName} 
                 onChange={handleNomineeChange} 
             />
-            <TextInput 
+            <TextInput2 
                 placeholder="Phone Number" 
                 value={contactInfo} 
                 onChange={handleContactChange} 
