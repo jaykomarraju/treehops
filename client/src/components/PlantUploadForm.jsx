@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Button from "./Button";
 import TextInput from "./TextInput";
 import cameraIcon from "../assets/camera.svg";
+import BackButton from "./BackButton";
+import { useNavigate } from "react-router-dom";
 
 const FileInputLabel = styled.label`
   background-image: url(${cameraIcon});
@@ -33,6 +35,8 @@ const ImagePreview = styled.img`
   max-width: 100%;
   max-height: 200px;
   margin-top: 20px;
+  border-radius: 8px;
+  border: 2px solid #111;
 `;
 
 const PlantUploadForm = () => {
@@ -40,6 +44,7 @@ const PlantUploadForm = () => {
   const [filePreview, setFilePreview] = useState(null);
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+    const navigate = useNavigate();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -61,8 +66,13 @@ const PlantUploadForm = () => {
     // Form submission logic
   };
 
+  const handleBack = () => {
+    navigate('/dashboard');
+  }
+
   return (
     <StyledForm onSubmit={handleSubmit}>
+        <BackButton backRoute={handleBack}/>
       <FileInputLabel htmlFor="file-input">
         <FileInput id="file-input" type="file" onChange={handleFileChange} />
       </FileInputLabel>

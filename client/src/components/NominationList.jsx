@@ -72,6 +72,7 @@ const NominationList = ({ hasUploadedPlant }) => {
         return null; // Or display a suitable placeholder if needed
     }
 
+
     return (
         <Container>
             <h3>Your Hoppers</h3>

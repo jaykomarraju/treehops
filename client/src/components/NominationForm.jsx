@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from './Button';
 import TextInput from './TextInput';
+import { useNavigate } from 'react-router-dom';
+import BackButton from './BackButton';
 
 const StyledForm = styled.form`
   display: flex;
@@ -23,6 +25,7 @@ const NominationForm = () => {
     const [nomineeName, setNomineeName] = useState('');
     const [contactInfo, setContactInfo] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleNomineeChange = (event) => {
         setNomineeName(event.target.value);
@@ -37,8 +40,13 @@ const NominationForm = () => {
         // Form submission logic
     };
 
+    const handleBack = () => {
+        navigate('/nominations');
+    }
+
     return (
         <StyledForm onSubmit={handleSubmit}>
+            <BackButton backRoute={handleBack}/>
             <Heading>Nominate a Plant Parent</Heading>
             <TextInput 
                 placeholder="Nominee's Name" 

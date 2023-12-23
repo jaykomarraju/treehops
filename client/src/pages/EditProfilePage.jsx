@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import EditProfileCard from '../components/EditProfileCard'; // Replace with the actual path
 import { useNavigate } from 'react-router-dom';
+import BottomNavBar from '../components/BottomNavBar';
 
 // Styled components
 const ProfilePageContainer = styled.div`
@@ -45,6 +46,7 @@ const EditProfilePage = ({ userId }) => {
                     onSave={handleSaveChanges}
                 />
             )}
+            <BottomNavBar />
         </ProfilePageContainer>
     );
 };
