@@ -11,6 +11,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
 import { doc, setDoc } from "firebase/firestore";
 import countryCodes from "../data/CountryCodes.json"; // Import the country codes
+import PhoneInput from "./PhoneInput";
 
 const StyledForm = styled.div`
   display: flex;
@@ -178,7 +179,7 @@ const SignupForm = () => {
               value={selectedCountryCode}
               placeholder="Select Country"
             />
-            <TextInput
+            <PhoneInput
               placeholder="Phone Number"
               onChange={handlePhoneNumberChange}
               value={phoneNumber}
