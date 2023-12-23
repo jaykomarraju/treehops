@@ -5,6 +5,7 @@ import TextInput from "./TextInput";
 import cameraIcon from "../assets/camera.svg";
 import BackButton from "./BackButton";
 import { useNavigate } from "react-router-dom";
+import TextInput2 from "./TextInput2";
 
 const FileInputLabel = styled.label`
   background-image: url(${cameraIcon});
@@ -77,7 +78,7 @@ const PlantUploadForm = () => {
         <FileInput id="file-input" type="file" onChange={handleFileChange} />
       </FileInputLabel>
       {filePreview && <ImagePreview src={filePreview} alt="Preview" />}
-      <TextInput
+      <TextInput2
         placeholder="Name your plant!"
         value={description}
         onChange={handleDescriptionChange}
