@@ -5,6 +5,7 @@ import NominationList from '../components/NominationList';
 import ProgressTracker from '../components/ProgressTracker';
 import UserCard from '../components/UserCard';
 import BottomNavBar from '../components/BottomNavBar';
+import LogoutButton from '../components/LogoutButton';
 
 // Styled components for the Dashboard
 const Container = styled.div`
@@ -28,6 +29,7 @@ const NominationPage = ({ userId }) => {
 
     return (
         <Container>
+            <LogoutButton />
             {/* <UserCard userId={userId} /> */}
             {/* <ProgressTracker /> */}
             {/* <PlantList /> */}

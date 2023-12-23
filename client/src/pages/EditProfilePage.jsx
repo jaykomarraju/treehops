@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import EditProfileCard from '../components/EditProfileCard'; // Replace with the actual path
 import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '../components/BottomNavBar';
+import LogoutButton from '../components/LogoutButton';
 
 // Styled components
 const ProfilePageContainer = styled.div`
@@ -40,6 +41,7 @@ const EditProfilePage = ({ userId }) => {
 
     return (
         <ProfilePageContainer>
+            <LogoutButton />    
             {userDetails && (
                 <EditProfileCard
                     userDetails={userDetails}

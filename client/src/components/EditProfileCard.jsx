@@ -37,6 +37,7 @@ const EditProfileCard = ({ userDetails, onSave }) => {
                 placeholder={userDetails.email}
             />
             <Button text="Save Changes" onClick={() => onSave(editedUserDetails)} />
+            
         </CardContainer>
     );
 };

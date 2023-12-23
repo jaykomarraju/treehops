@@ -113,6 +113,8 @@ const SignupForm = () => {
   const handleSignup = async (event) => {
     event.preventDefault(); // Prevent default form submission
     let otpInput = otp; // Use the OTP from the state
+    let phoneNumber = combineCountryCodeAndPhoneNumber();
+
 
     if (otpInput.length === 6) {
       let confirmationResult = window.confirmationResult;

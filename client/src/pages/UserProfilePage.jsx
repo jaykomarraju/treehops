@@ -4,6 +4,7 @@ import UserCard from '../components/UserCard'; // Assuming UserCard is in the sa
 import Button from '../components/Button'; // Replace with your button component
 import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '../components/BottomNavBar';
+import LogoutButton from '../components/LogoutButton';
 
 // Styled components for the profile page
 const ProfilePageContainer = styled.div`
@@ -37,6 +38,7 @@ const UserProfilePage = ({ userId }) => {
 
     return (
         <ProfilePageContainer>
+            <LogoutButton />
             <UserCard userId={userId} />
             <ProfileActions>
                 <Button text="Edit Profile" onClick={handleEditProfile} />
