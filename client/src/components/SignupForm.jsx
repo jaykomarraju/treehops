@@ -1,15 +1,28 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "./TextInput";
 import Button from "./Button";
+import SelectInput from "./SelectInput";
+import SuccessModal from "./SuccessModal";
 import styled from "styled-components";
 import Logo from "./Logo";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../Firebase";
+import { auth, db } from "../Firebase";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
+import countryCodes from "../data/CountryCodes.json"; // Import the country codes
 
 const StyledForm = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  //   background-color:pink;
+`;
+
+const PhoneDiv = styled.div`
+  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
 `;
@@ -22,32 +35,67 @@ const Heading = styled.h1`
 `;
 
 const SignupForm = () => {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [selectedCountryCode, setSelectedCountryCode] = useState("+1");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const navigate = useNavigate();
 
   const generateRecaptcha = () => {
-    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha', {
-      'size': 'invisible',
-      'callback': (response) => {
-        // reCAPTCHA solved, allow signInWithPhoneNumber.
-        // ...
-      }
-    }, auth);
-  }
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      "recaptcha",
+      {
+        size: "invisible",
+        callback: (response) => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+          // ...
+        },
+      },
+      auth
+    );
+  };
 
   useEffect(() => {
-    if (auth) { 
-        console.log("The Auth object is available: ", auth);
-    }   
-    }, [auth]);
+    if (auth) {
+      console.log("The Auth object is available: ", auth);
+    }
+  }, [auth]);
+
+  const handleCountryChange = (e) => {
+    setSelectedCountryCode(e.target.value);
+  };
+
+  const handlePhoneNumberChange = (e) => {
+    // Concatenate the selected country code with the entered phone number
+    setPhoneNumber(e.target.value);
+  };
+
+  const combineCountryCodeAndPhoneNumber = () => {
+    return selectedCountryCode + phoneNumber;
+  };
+
+  useEffect(() => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        "recaptcha", // Ensure this element ID exists
+        {
+          'size': "invisible",
+          'callback': (response) => {
+            // reCAPTCHA solved, allow signInWithPhoneNumber.
+          },
+        },
+        auth
+      );
+    }
+  }, []);
 
   const handleSendOtp = async (event) => {
     event.preventDefault();
+    let phoneNumber = combineCountryCodeAndPhoneNumber();
     generateRecaptcha();
     let appVerifier = window.recaptchaVerifier;
 
@@ -55,6 +103,7 @@ const SignupForm = () => {
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
         setIsOtpSent(true); // Update state only after successful OTP sending
+        setOtp("");
       })
       .catch((error) => {
         console.log(error); // Consider improving error handling for production
@@ -67,16 +116,46 @@ const SignupForm = () => {
 
     if (otpInput.length === 6) {
       let confirmationResult = window.confirmationResult;
-      confirmationResult
-        .confirm(otpInput)
-        .then((result) => {
-          console.log(result.user);
-          alert("User signed in successfully");
-          navigate("/dashboard"); // Navigate to dashboard or relevant page
-        })
-        .catch((error) => {
-          alert("User couldn't sign in (bad verification code?)");
-        });
+      try {
+        const result = await confirmationResult.confirm(otpInput);
+        console.log(result.user);
+
+        // Check if the user has a valid, unused invitation (implement later)
+        // const invitationsRef = collection(db, "Invitations");
+        // const querySnapshot = await getDocs(query(invitationsRef, where("receiverPhoneNumber", "==", phoneNumber), where("used", "==", false)));
+
+        // if (querySnapshot.empty) {
+        //   alert("No valid invitation found for this phone number.");
+        //   return;
+        // }
+
+        // // Set invitation as used
+        // const invitation = querySnapshot.docs[0];
+        // await updateDoc(invitation.ref, { used: true });
+
+        // Create a new document in Firestore for the user
+        const userDoc = {
+          userId: result.user.uid,
+          name: name,
+          email: email,
+          phoneNumber: phoneNumber,
+          uploadedPlants: [],
+          invitationsSent: [],
+          inviteStatus: "active",
+          nominationDeadline: null, // Set after first plant upload
+        };
+
+        // await addDoc(collection(db, "Users"), userDoc);
+        const userDocRef = doc(db, "Users", userDoc.userId); // Create a reference to the document with the user's UID
+        await setDoc(userDocRef, userDoc); // Set the document with the userDoc data
+
+        // alert("User signed in successfully");
+        // setShowSuccessModal(true);
+        navigate("/dashboard"); // Navigate to dashboard or relevant page
+      } catch (error) {
+        console.error("Error during user signup: ", error);
+        alert("User couldn't sign in (bad verification code?)");
+      }
     }
   };
 
@@ -86,21 +165,38 @@ const SignupForm = () => {
       <Heading>Sign Up</Heading>
       {!isOtpSent ? (
         <>
+          <PhoneDiv>
+            <SelectInput
+              options={countryCodes.map((country) => ({
+                value: country.dial_code,
+                //   label: `${country.name} (${country.dial_code})`,
+                label: `${country.dial_code}`,
+              }))}
+              onChange={handleCountryChange}
+              value={selectedCountryCode}
+              placeholder="Select Country"
+            />
+            <TextInput
+              placeholder="Phone Number"
+              onChange={handlePhoneNumberChange}
+              value={phoneNumber}
+              type="tel"
+            />
+          </PhoneDiv>
           <TextInput
-            placeholder="Username"
-            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Name"
+            onChange={(e) => setName(e.target.value)}
+            value={name}
           />
           <TextInput
             placeholder="Email"
             type="email"
             onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextInput
-            placeholder="Phone Number"
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            value={email}
           />
           <Button text="Send OTP" onClick={handleSendOtp} />
-          <div id="recaptcha"></div> {/* ID matches the one used in generateRecaptcha */}
+          <div id="recaptcha"></div>{" "}
+          {/* ID matches the one used in generateRecaptcha */}
         </>
       ) : (
         <>
@@ -112,6 +208,13 @@ const SignupForm = () => {
           <Button text="Sign Up" onClick={handleSignup} />
         </>
       )}
+      {/* {showSuccessModal && (
+        <SuccessModal
+          title="Success!"
+          message="You have successfully signed up."
+          onClose={() => setShowSuccessModal(false)}
+        />
+      )} */}
     </StyledForm>
   );
 };

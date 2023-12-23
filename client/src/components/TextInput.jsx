@@ -12,8 +12,10 @@ const StyledInput = styled.input`
     font-size: 16px;
     height: 48px;
     margin: 10px;
+    margin-right: 0;
+    margin-left: 0;
     line-height: 24px;
-    max-width: 100%;
+    width: 100%;
     padding: 15px;
     position: relative;
     outline: none; // No outline for focused state
@@ -29,15 +31,17 @@ const StyledInput = styled.input`
     }
 `;
 
-const TextInput = ({ placeholder, onChange }) => {
-  return (
-    <StyledInput
-      className="text-input"
-      type="text"
-      placeholder={placeholder}
-      onChange={onChange}
-    />
-  );
-};
+const TextInput = ({ placeholder, onChange, value }) => {
+    return (
+      <StyledInput
+        className="text-input"
+        type="text"
+        placeholder={placeholder}
+        value={value} 
+        onChange={onChange}
+      />
+    );
+  };
+  
 
 export default TextInput;
