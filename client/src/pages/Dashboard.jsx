@@ -14,7 +14,12 @@ const DashboardContainer = styled.div`
     align-items: center;
     justify-content: center;
     margin: 20px;
-    height: calc(100vh - 80px);
+    min-height: calc(100vh - 80px);
+    margin-bottom: 150px;
+
+    @media (max-width: 768px) {
+        margin-top: 100px;
+    }
 `;
 
 const Dashboard = ({ userId }) => {

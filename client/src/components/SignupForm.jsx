@@ -76,23 +76,24 @@ const SignupForm = () => {
   };
 
   const combineCountryCodeAndPhoneNumber = () => {
+    console.log(selectedCountryCode + phoneNumber);
     return selectedCountryCode + phoneNumber;
   };
 
-  useEffect(() => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        "recaptcha", // Ensure this element ID exists
-        {
-          'size': "invisible",
-          'callback': (response) => {
-            // reCAPTCHA solved, allow signInWithPhoneNumber.
-          },
-        },
-        auth
-      );
-    }
-  }, []);
+//   useEffect(() => {
+//     if (!window.recaptchaVerifier) {
+//       window.recaptchaVerifier = new RecaptchaVerifier(
+//         "recaptcha", // Ensure this element ID exists
+//         {
+//           'size': "invisible",
+//           'callback': (response) => {
+//             // reCAPTCHA solved, allow signInWithPhoneNumber.
+//           },
+//         },
+//         auth
+//       );
+//     }
+//   }, []);
 
   const handleSendOtp = async (event) => {
     event.preventDefault();

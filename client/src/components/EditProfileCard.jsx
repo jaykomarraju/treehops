@@ -6,12 +6,14 @@ import Button from '../components/Button'; // Assuming Button is in the same dir
 // Styled components
 const CardContainer = styled.div`
     border-radius: 8px;
-    padding: 20px;
+    // padding: 20px;
+    min-width: 300px;
     margin: 20px;
     font-family: 'Rethink Sans', sans-serif;
     text-align: center;
     display: flex;
     flex-direction: column;
+    // background-color: pink;
 `;
 
 const EditProfileCard = ({ userDetails, onSave }) => {
@@ -26,18 +28,17 @@ const EditProfileCard = ({ userDetails, onSave }) => {
             <h3>Edit Profile</h3>
             <TextInput
                 label="Name"
-                value={userDetails.name}
+                value={editedUserDetails.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder={userDetails.name}
+                placeholder="Name"
             />
             <TextInput
                 label="Email"
                 value={editedUserDetails.email}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                placeholder={userDetails.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                placeholder="Email"
             />
             <Button text="Save Changes" onClick={() => onSave(editedUserDetails)} />
-            
         </CardContainer>
     );
 };

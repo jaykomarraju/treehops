@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import UserCard from '../components/UserCard'; // Assuming UserCard is in the same directory
 import Button from '../components/Button'; // Replace with your button component
 import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '../components/BottomNavBar';
 import LogoutButton from '../components/LogoutButton';
+import { AuthContext } from '../context/AuthContext';
 
 // Styled components for the profile page
 const ProfilePageContainer = styled.div`
@@ -23,6 +24,9 @@ const ProfileActions = styled.div`
 const UserProfilePage = ({ userId }) => {
     const [userDetails, setUserDetails] = useState(null);
 
+    const { currentUser } = useContext(AuthContext);
+
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,7 +43,7 @@ const UserProfilePage = ({ userId }) => {
     return (
         <ProfilePageContainer>
             <LogoutButton />
-            <UserCard userId={userId} />
+            {currentUser && <UserCard userId={currentUser.uid} />}
             <ProfileActions>
                 <Button text="Edit Profile" onClick={handleEditProfile} />
                 {/* Add more actions as needed */}

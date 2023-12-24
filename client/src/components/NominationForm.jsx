@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import BackButton from './BackButton';
 import TextInput2 from './TextInput2';
 import PhoneInput2 from './PhoneInput2';
+import LogoutButton from './LogoutButton';
 
 const StyledForm = styled.form`
   display: flex;
@@ -49,6 +50,7 @@ const NominationForm = () => {
     return (
         <StyledForm onSubmit={handleSubmit}>
             <BackButton backRoute={handleBack}/>
+            <LogoutButton />
             <Heading>Nominate a Plant Parent</Heading>
             <TextInput2 
                 placeholder="Nominee's Name" 
