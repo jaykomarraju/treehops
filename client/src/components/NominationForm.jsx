@@ -7,6 +7,8 @@ import BackButton from './BackButton';
 import TextInput2 from './TextInput2';
 import PhoneInput2 from './PhoneInput2';
 import LogoutButton from './LogoutButton';
+import { collection, addDoc, doc, updateDoc, serverTimestamp, arrayUnion } from 'firebase/firestore';
+import { db, auth } from '../Firebase';
 
 const StyledForm = styled.form`
   display: flex;
@@ -40,7 +42,32 @@ const NominationForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        // Form submission logic
+    
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+            setError("User not authenticated");
+            return;
+        }
+    
+        try {
+            // Add nomination to the Nominations collection
+            const nominationRef = await addDoc(collection(db, "Nominations"), {
+                name: nomineeName,
+                phoneNumber: contactInfo,
+                status: "active",
+                createdAt: serverTimestamp()
+            });
+    
+            // Update current user's document with the nomination ID
+            const userRef = doc(db, "Users", currentUser.uid);
+            await updateDoc(userRef, {
+                nominations: arrayUnion(nominationRef.id)
+            });
+    
+            navigate('/nominations');
+        } catch (error) {
+            setError(error.message);
+        }
     };
 
     const handleBack = () => {

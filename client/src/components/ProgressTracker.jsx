@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { collection, query, getDocs } from 'firebase/firestore';
+import { db } from '../Firebase';
 
 // Styled components
 const Container = styled.div`
     text-align: center;
     margin: 20px;
+    // width: 100%;
     font-family: 'Rethink Sans', sans-serif;
 `;
 
@@ -28,12 +31,17 @@ const ProgressText = styled.p`
 const ProgressTracker = () => {
     const [progress, setProgress] = useState(0);
 
-
     useEffect(() => {
-        // Fetch global progress data and update the state
-        // Placeholder for fetch logic
+        const fetchPlantCount = async () => {
+            const q = query(collection(db, "Plants"));
+            const querySnapshot = await getDocs(q);
+            const totalPlants = querySnapshot.size;
+            // const totalPlants = 100000;
+            const progressPercentage = (totalPlants / 1000000) * 100;
+            setProgress(progressPercentage);
+        };
 
-    setProgress(32.345);
+        fetchPlantCount();
     }, []);
 
     return (
@@ -42,7 +50,7 @@ const ProgressTracker = () => {
             <ProgressBarContainer>
                 <ProgressBar style={{ width: `${progress}%` }}></ProgressBar>
             </ProgressBarContainer>
-            <ProgressText>{(progress/100)*1000000} trees planted so far</ProgressText>
+            <ProgressText>{Math.round(progress * 10000)} trees planted so far</ProgressText>
         </Container>
     );
 };

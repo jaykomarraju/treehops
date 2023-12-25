@@ -6,6 +6,9 @@ import ProgressTracker from '../components/ProgressTracker';
 import UserCard from '../components/UserCard';
 import BottomNavBar from '../components/BottomNavBar';
 import LogoutButton from '../components/LogoutButton';
+import { db, auth } from '../Firebase';
+import { doc, getDoc } from 'firebase/firestore';
+
 
 // Styled components for the Dashboard
 const Container = styled.div`
@@ -14,18 +17,36 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     margin: 20px;
-    height: calc(100vh - 80px);
+    min-height: calc(100vh - 80px);
+    margin-bottom: 150px;
 `;
 
-const NominationPage = ({ userId }) => {
+const NominationPage = () => {
     // States and effects for fetching user data and checking if they uploaded a plant
     const [hasUploadedPlant, setHasUploadedPlant] = useState(true);
 
     useEffect(() => {
-        // Fetch user data and update state
-        // Placeholder for fetch logic
-        // Update setHasUploadedPlant based on fetched data
-    }, [userId]);
+        const fetchUserData = async () => {
+            // Check if user is authenticated
+            if (auth.currentUser) {
+                const userId = auth.currentUser.uid; // Get the user ID from auth
+                const userRef = doc(db, "Users", userId);
+                const userSnap = await getDoc(userRef);
+        
+                if (userSnap.exists()) {
+                    const userData = userSnap.data();
+                    setHasUploadedPlant(userData.uploadedPlants && userData.uploadedPlants.length > 0);
+                    console.log(hasUploadedPlant)
+                } else {
+                    console.log("No such user!");
+                }
+            } else {
+                console.log("User not authenticated");
+            }
+        };
+    
+        fetchUserData();
+    }, []);
 
     return (
         <Container>
