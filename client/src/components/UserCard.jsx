@@ -1,37 +1,63 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { db } from "../Firebase"; // Adjust path as needed
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc,
+  collection, query, where, getDocs
+} from "firebase/firestore";
+
 
 // Styled components
 const CardContainer = styled.div`
-  // border: 2px solid #111;
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  border-radius: 10px;
   padding: 20px;
   margin: 20px;
-  font-family: "Rethink Sans", sans-serif;
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Rethink Sans', sans-serif;
   text-align: center;
 `;
 
 const UserInfo = styled.p`
-  font-size: 16px;
-  margin: 10px 0;
+  color: #333;
+  font-size: 17px;
+  margin: 5px 0;
+  padding: 5px;
 `;
 
 const LoadingMessage = styled.p`
-  font-family: "Rethink Sans", sans-serif;
+  color: #666;
+  font-family: 'Rethink Sans', sans-serif;
 `;
 
 const UserCard = ({ userId }) => {
   const [userDetails, setUserDetails] = useState(null);
+  const [hoppedByName, setHoppedByName] = useState('');
+
 
   useEffect(() => {
     if (userId) {
       const userRef = doc(db, "Users", userId);
       getDoc(userRef)
-        .then((docSnap) => {
+        .then(async (docSnap) => {
           if (docSnap.exists()) {
-            setUserDetails(docSnap.data());
+            const userData = docSnap.data();
+            setUserDetails(userData);
+
+            // If hoppedBy is available, find the user who invited them
+            if (userData.hoppedBy) {
+              const usersRef = collection(db, "Users");
+              const querySnapshot = await getDocs(query(usersRef, where("phoneNumber", "==", userData.hoppedBy)));
+
+              if (!querySnapshot.empty) {
+                // Assuming there is only one user with this phone number
+                const hoppedByUserData = querySnapshot.docs[0].data();
+                setHoppedByName(hoppedByUserData.name);
+              }
+            }
           } else {
             console.log("No such document!");
           }
@@ -40,8 +66,6 @@ const UserCard = ({ userId }) => {
           console.error("Error fetching user data: ", error);
         });
     }
-
-    
   }, [userId]);
 
   if (!userDetails) {
@@ -60,7 +84,7 @@ const UserCard = ({ userId }) => {
       <UserInfo>Phone: {userDetails.phoneNumber}</UserInfo>
       <UserInfo>Email: {userDetails.email}</UserInfo>
       <UserInfo>Plants Uploaded: {plantCount}</UserInfo>
-      <UserInfo>Hopped By: {userDetails.nominatedBy}</UserInfo>
+      <UserInfo>Hopped By: {hoppedByName}</UserInfo>
     </CardContainer>
   );
 };

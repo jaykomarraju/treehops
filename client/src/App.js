@@ -10,6 +10,7 @@ import EditProfilePage from "./pages/EditProfilePage";
 import NominationPage from "./pages/NominationPage";
 import RequireAuth from "./context/RequireAuth";
 import { AuthProvider } from "./context/AuthContext";
+import FeedPage from "./pages/FeedPage";
 
 function App() {
   return (
@@ -55,6 +56,11 @@ function App() {
         <Route path="/nominations" element={
         <RequireAuth>
         <NominationPage />
+        </RequireAuth>
+        } />
+        <Route path='/feed' element={
+        <RequireAuth>
+          <FeedPage />
         </RequireAuth>
         } />
       </Routes>
