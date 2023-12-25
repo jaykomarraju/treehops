@@ -246,7 +246,7 @@ const SignupForm = () => {
             // Update the status of the nomination
             await updateDoc(nominationDoc.ref, { status: "accepted" });
 
-            navigate("/dashboard");
+            navigate("/onboard");
         } catch (error) {
             console.error("Error during user signup: ", error);
             alert("User couldn't sign in (bad verification code?)");
