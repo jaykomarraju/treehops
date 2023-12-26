@@ -1,8 +1,17 @@
 from flask import Flask, request, jsonify
 from firebase_admin import credentials, firestore, initialize_app
-import uuid
+from PIL import Image
+import requests
+from transformers import CLIPProcessor, CLIPModel
+from flask_cors import CORS
+from flask_cors import cross_origin
 
 app = Flask(__name__)
+CORS(app)
+
+# Initialize CLIP model
+model = CLIPModel.from_pretrained("openai/clip-vit-large-patch14")
+processor = CLIPProcessor.from_pretrained("openai/clip-vit-large-patch14")
 
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate("tree-hops-firebase-adminsdk-v8ors-003ce7b52a.json")
@@ -10,23 +19,40 @@ initialize_app(cred)
 
 db = firestore.client()
 
-# Flask routes
+# Flask route to check if the image is a plant
+@app.route('/is_plant', methods=['POST'])
+@cross_origin(origin='localhost', headers=['Content-Type'])
+def is_plant():
+    try:
+        # Get the image URL from the request
+        data = request.get_json()
+        url = data['url']
+
+        # Load the image
+        image = Image.open(requests.get(url, stream=True).raw)
+
+        # Process the image and text with CLIP
+        inputs = processor(text=["the subject of the photo is a plant", "the subject of the photo is not a plant"], 
+                           images=image, return_tensors="pt", padding=True)
+        outputs = model(**inputs)
+
+       # Compute probabilities
+        logits_per_image = outputs.logits_per_image
+        probs = logits_per_image.softmax(dim=1)
+
+        # Determine if it's a plant and convert the result to a Python boolean
+        is_plant = probs[0][0].item() > probs[0][1].item()
+
+        # Return the result
+        return jsonify({'is_plant': is_plant})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+# Main route
 @app.route('/')
 def index():
     return "Welcome to Tree Hops!"
 
-@app.route('/api/nominations', methods=['POST'])
-def send_nomination():
-    """
-    Endpoint for sending a nomination
-    """
-    try:
-        nomination_data = request.json['data']
-        db.collection('nominations').add(nomination_data)
-        # Send email/notification to the nominated user (not implemented)
-        return jsonify({"success": True}), 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
+# Run the Flask app
 if __name__ == '__main__':
     app.run(debug=True)
