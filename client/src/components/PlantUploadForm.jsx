@@ -131,19 +131,19 @@ const PlantUploadForm = () => {
       const uploaderId = auth.currentUser.uid;
       const uniqueFileName = `${uploaderId}_${Date.now()}_${selectedFile.name}`;
 
-      // First, upload the file to a temporary location
-      const tempStorageRef = ref(storage, `uploads/${uniqueFileName}`);
-      await uploadBytes(tempStorageRef, selectedFile);
-      const tempImageURL = await getDownloadURL(tempStorageRef);
+      // // First, upload the file to a temporary location
+      // const tempStorageRef = ref(storage, `uploads/${uniqueFileName}`);
+      // await uploadBytes(tempStorageRef, selectedFile);
+      // const tempImageURL = await getDownloadURL(tempStorageRef);
 
-      // Check if the uploaded image is a plant
-      const isPlant = await checkIfPlant(tempImageURL);
-      console.log("isPlant: ", isPlant);
+      // // Check if the uploaded image is a plant
+      // const isPlant = await checkIfPlant(tempImageURL);
+      // console.log("isPlant: ", isPlant);
 
-      if (!isPlant) {
-        setError("Uploaded image is not a plant. Please upload a plant image.");
-        return;
-      }
+      // if (!isPlant) {
+      //   setError("Uploaded image is not a plant. Please upload a plant image.");
+      //   return;
+      // }
 
       // If it's a plant, proceed with the current process
       const plantStorageRef = ref(storage, `plants/${uniqueFileName}`);
