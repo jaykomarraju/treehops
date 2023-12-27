@@ -32,8 +32,7 @@ def is_plant():
         image = Image.open(requests.get(url, stream=True).raw)
 
         # Process the image and text with CLIP
-        inputs = processor(text=["the subject of the photo is a plant", "the subject of the photo is not a plant"], 
-                           images=image, return_tensors="pt", padding=True)
+        inputs = processor(text=["This is a photo of a living plant, showing characteristics like leaves, stems, or flowers commonly found in botanical subjects.", "his photo does not depict a plant but may include objects, animals, landscapes, or people that are clearly distinguishable from botanical subjects."], images=image, return_tensors="pt", padding=True)
         outputs = model(**inputs)
 
        # Compute probabilities
