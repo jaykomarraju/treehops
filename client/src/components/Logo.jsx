@@ -29,7 +29,7 @@ const Logo = () => {
   return (
     <StyledLogo>
       <StyledImage src={logoImage} />
-      <StyledText>Tree Hop</StyledText>
+      <StyledText>Planters.club</StyledText>
     </StyledLogo>
   )
 }

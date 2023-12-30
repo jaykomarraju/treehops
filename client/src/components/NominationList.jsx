@@ -176,12 +176,12 @@ const NominationList = ({ hasUploadedPlant }) => {
             <Status status={nomination.status}>
               {getStatusDisplay(nomination)}
             </Status>
-            {nomination.timeRemaining === "Expired" && (
+            {/* {nomination.timeRemaining === "Expired" && (
               <Button
                 text="Nominate New Candidate"
                 onClick={handleNewNomination}
               />
-            )}
+            )} */}
           </NominationItem>
         ))
       ) : (
