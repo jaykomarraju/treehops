@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import logoImage from '../assets/logoImage.png'
+import logoImage from '../assets/ideas2024.png'
 
 // The logo component should contain a image and the text "Tree Hop" next to it in one line.
 
@@ -13,7 +13,7 @@ const StyledLogo = styled.div`
 
 const StyledImage = styled.img`
     width: 50px;
-    height: 50px;
+    // height: 50px;
     `
 
 const StyledText = styled.div`
@@ -29,7 +29,7 @@ const Logo = () => {
   return (
     <StyledLogo>
       <StyledImage src={logoImage} />
-      <StyledText>Planters.club</StyledText>
+      <StyledText>Ideas 2024</StyledText>
     </StyledLogo>
   )
 }

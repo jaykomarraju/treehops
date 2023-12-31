@@ -12,10 +12,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { doc, setDoc } from "firebase/firestore";
 import countryCodes from "../data/CountryCodes.json"; // Import the country codes
 import PhoneInput from "./PhoneInput";
-import { getDocs, query, where, 
-  updateDoc, getDoc,
-} from "firebase/firestore";
-
+import { getDocs, query, where, updateDoc, getDoc } from "firebase/firestore";
 
 const StyledForm = styled.div`
   display: flex;
@@ -103,22 +100,6 @@ const SignupForm = () => {
     event.preventDefault();
     let phoneNumber = combineCountryCodeAndPhoneNumber();
 
-    // Check if the phone number exists in the Nominations collection and is active
-    const nominationsRef = collection(db, "Nominations");
-    const querySnapshot = await getDocs(
-      query(
-        nominationsRef,
-        where("phoneNumber", "==", phoneNumber),
-        where("status", "==", "active")
-      )
-    );
-
-    if (querySnapshot.empty) {
-      alert("No active nomination found for this phone number.");
-      return;
-    }
-
-    // Generate reCAPTCHA and send OTP if nomination exists
     generateRecaptcha();
     let appVerifier = window.recaptchaVerifier;
 
@@ -131,8 +112,7 @@ const SignupForm = () => {
       .catch((error) => {
         console.log(error);
       });
-};
-
+  };
 
   // const handleSignup = async (event) => {
   //   event.preventDefault(); // Prevent default form submission
@@ -187,73 +167,35 @@ const SignupForm = () => {
   const handleSignup = async (event) => {
     event.preventDefault();
     let phoneNumber = combineCountryCodeAndPhoneNumber();
-
+  
     if (otp.length === 6) {
-        let confirmationResult = window.confirmationResult;
-        try {
-            const result = await confirmationResult.confirm(otp);
-            console.log(result.user);
-
-            // Query the Nominations collection to check if the phone number is nominated
-            const nominationsRef = collection(db, "Nominations");
-            const querySnapshot = await getDocs(
-                query(
-                    nominationsRef,
-                    where("phoneNumber", "==", phoneNumber),
-                    where("status", "==", "active")
-                )
-            );
-
-            if (querySnapshot.empty) {
-                alert("No active nomination found for this phone number.");
-                return;
-            }
-
-            // Get the nomination ID and document reference
-            const nominationDoc = querySnapshot.docs[0];
-            const nominationId = nominationDoc.id;
-
-            // Find the nominator's user document using the nomination ID
-            const usersRef = collection(db, "Users");
-            const usersSnapshot = await getDocs(
-                query(usersRef, where("nominations", "array-contains", nominationId))
-            );
-
-            if (usersSnapshot.empty) {
-                alert("No user found who nominated this phone number.");
-                return;
-            }
-
-            // Get the nominator's phone number
-            const nominatorPhoneNumber = usersSnapshot.docs[0].data().phoneNumber;
-
-            // Create a new document in Firestore for the user
-            const userDoc = {
-                userId: result.user.uid,
-                name: name,
-                email: email,
-                phoneNumber: phoneNumber,
-                uploadedPlants: [],
-                invitationsSent: [],
-                inviteStatus: "active",
-                nominationDeadline: null,
-                hoppedBy: nominatorPhoneNumber // Add the hoppedBy field
-            };
-
-            const userDocRef = doc(db, "Users", userDoc.userId);
-            await setDoc(userDocRef, userDoc);
-
-            // Update the status of the nomination
-            await updateDoc(nominationDoc.ref, { status: "accepted" });
-
-            navigate("/onboard");
-        } catch (error) {
-            console.error("Error during user signup: ", error);
-            alert("User couldn't sign in (bad verification code?)");
-        }
+      let confirmationResult = window.confirmationResult;
+      try {
+        const result = await confirmationResult.confirm(otp);
+        console.log(result.user);
+  
+        // Create a new document in Firestore for the user
+        const userDoc = {
+          userId: result.user.uid,
+          name: name,
+          email: email,
+          phoneNumber: phoneNumber,
+          ideasCreated: [],
+          invitationsSent: [],
+          // inviteStatus: "active",
+          // nominationDeadline: null, // Set after first plant upload
+        };
+  
+        const userDocRef = doc(db, "Users", userDoc.userId);
+        await setDoc(userDocRef, userDoc);
+  
+        navigate("/onboard");
+      } catch (error) {
+        console.error("Error during user signup: ", error);
+        alert("User couldn't sign in (bad verification code?)");
+      }
     }
-};
-
+  };
 
   return (
     <StyledForm>

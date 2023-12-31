@@ -112,7 +112,7 @@ const PlantFeed = () => {
 
   return (
     <FeedContainer>
-      <h3>Plant Feed</h3>
+      <h3>Ideas Feed</h3>
       {plants.map((plant) => (
         <PlantCard key={plant.id}>
           <PlantImage src={plant.imageUrl} alt={plant.name} />

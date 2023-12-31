@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledButton = styled.button`
     align-items: center;
-    background-color: #10cc5f;
+    background-color: #b5b5b5;
 
     border: 2px solid #111;
     border-radius: 8px;
