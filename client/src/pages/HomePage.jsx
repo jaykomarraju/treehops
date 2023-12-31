@@ -32,7 +32,7 @@ const HomePage = () => {
     return (
         <Container>
             <Logo />
-            <MissionStatement>Our Mission: Plant 1,000,000 Trees</MissionStatement>
+            <MissionStatement>Our Mission: Connect 1,000,000 Dogs</MissionStatement>
             <Button text="Join Us" onClick={navigateToAuth} />
         </Container>
     );

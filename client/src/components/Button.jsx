@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledButton = styled.button`
     align-items: center;
-    background-color: #10cc5f;
+    background-color: #d69d66;
 
     border: 2px solid #111;
     border-radius: 8px;
@@ -46,7 +46,7 @@ const StyledButton = styled.button`
     }
 
     &:active {
-        background-color: #09eb68;
+        background-color: #c57e3b;
         outline: 0;
     }
 

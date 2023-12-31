@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import logoImage from '../assets/logoImage.png'
+import logoImage from '../assets/myinu.png'
 
 // The logo component should contain a image and the text "Tree Hop" next to it in one line.
 
@@ -29,7 +29,7 @@ const Logo = () => {
   return (
     <StyledLogo>
       <StyledImage src={logoImage} />
-      <StyledText>Planters.club</StyledText>
+      <StyledText>Myinu.club</StyledText>
     </StyledLogo>
   )
 }
