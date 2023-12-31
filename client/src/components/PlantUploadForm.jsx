@@ -1,39 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "./Button";
 import TextInput from "./TextInput";
-import cameraIcon from "../assets/camera.svg";
 import BackButton from "./BackButton";
 import { useNavigate } from "react-router-dom";
-import TextInput2 from "./TextInput2";
 import LogoutButton from "./LogoutButton";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import {
-  collection,
-  addDoc,
-  doc,
-  updateDoc,
-  serverTimestamp,
-  arrayUnion,
-} from "firebase/firestore";
-import { db, storage, auth } from "../Firebase";
-
-const FileInputLabel = styled.label`
-  background-image: url(${cameraIcon});
-  background-size: cover;
-  cursor: pointer;
-  height: 50px;
-  width: 50px;
-  display: block;
-`;
-
-const FileInput = styled.input`
-  opacity: 0;
-  position: absolute;
-  z-index: -1;
-  width: 50px;
-  height: 50px;
-`;
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "../Firebase";
+import LongTextInput from "./LongTextInput";
 
 const StyledForm = styled.form`
   display: flex;
@@ -41,138 +15,82 @@ const StyledForm = styled.form`
   align-items: center;
   justify-content: center;
   height: calc(100vh - 80px);
+  // background-color: #f5f5f5;
 `;
 
-const ImagePreview = styled.img`
-  max-width: 100%;
-  max-height: 300px;
-  margin-top: 20px;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: calc(90vw - 40px);
+  max-width: 600px;
+  height: 100%;
+  background-color: #fff;
   border-radius: 8px;
-  border: 2px solid #111;
+  padding: 20px;
+  margin: 20px;
 `;
+
+const Heading = styled.h3`
+  font-family: "Rethink Sans", sans-serif;
+  font-size: 27px;
+  margin: 20px;
+  margin-bottom: 40px;
+  font-weight: 500;
+  text-align: center;
+  color: #111;
+`;
+
+
 
 const PlantUploadForm = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [filePreview, setFilePreview] = useState(null);
-  const [description, setDescription] = useState("");
+  const [ideaTitle, setIdeaTitle] = useState("");
+  const [ideaDescription, setIdeaDescription] = useState("");
   const [error, setError] = useState("");
-  const [location, setLocation] = useState({ latitude: null, longitude: null });
-
+  
   const navigate = useNavigate();
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      setFilePreview(URL.createObjectURL(file));
-    } else {
-      setSelectedFile(null);
-      setFilePreview(null);
-    }
+  const handleIdeaTitleChange = (event) => {
+    setIdeaTitle(event.target.value);
   };
 
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-
-          console.log("Latitude is :", position.coords.latitude);
-          console.log("Longitude is :", position.coords.longitude);
-        },
-        (error) => {
-          console.error("Error Code = " + error.code + " - " + error.message);
-          setError("Unable to access your location");
-        }
-      );
-    } else {
-      setError("Geolocation is not supported by this browser.");
-    }
-  };
-
-  useEffect(() => {
-    getLocation();
-  }, []);
-
-  const handleDescriptionChange = (event) => {
-    setDescription(event.target.value);
-  };
-
-  const checkIfPlant = async (imageURL) => {
-    try {
-      const response = await fetch("http://127.0.0.1:5000/is_plant", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url: imageURL }),
-      });
-
-      const data = await response.json();
-      console.log(data);
-      return data.is_plant;
-    } catch (error) {
-      console.error("Error checking if image is a plant: ", error);
-      return false;
-    }
+  const handleIdeaDescriptionChange = (event) => {
+    setIdeaDescription(event.target.value);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!selectedFile) {
-      setError("Please select a file to upload");
+    if (!ideaTitle || !ideaDescription) {
+      setError("Please fill in both the title and description of your idea");
       return;
     }
 
     try {
-      const uploaderId = auth.currentUser.uid;
-      const uniqueFileName = `${uploaderId}_${Date.now()}_${selectedFile.name}`;
-
-      // // First, upload the file to a temporary location
-      // const tempStorageRef = ref(storage, `uploads/${uniqueFileName}`);
-      // await uploadBytes(tempStorageRef, selectedFile);
-      // const tempImageURL = await getDownloadURL(tempStorageRef);
-
-      // // Check if the uploaded image is a plant
-      // const isPlant = await checkIfPlant(tempImageURL);
-      // console.log("isPlant: ", isPlant);
-
-      // if (!isPlant) {
-      //   setError("Uploaded image is not a plant. Please upload a plant image.");
-      //   return;
-      // }
-
-      // If it's a plant, proceed with the current process
-      const plantStorageRef = ref(storage, `plants/${uniqueFileName}`);
-      await uploadBytes(plantStorageRef, selectedFile);
-      const imageURL = await getDownloadURL(plantStorageRef);
+      const userId = auth.currentUser.uid;
 
       // Add a new document in Firestore
-      const docRef = await addDoc(collection(db, "Plants"), {
-        uploaderId,
-        imageURL,
-        uploadDate: serverTimestamp(),
-        description,
-        location,
+      const docRef = await addDoc(collection(db, "Ideas"), {
+        userId,
+        title: ideaTitle,
+        description: ideaDescription,
+        timestamp: serverTimestamp(),
       });
 
-      // Update the user's uploadedPlants field
-      const userRef = doc(db, "Users", uploaderId);
-      await updateDoc(userRef, {
-        uploadedPlants: arrayUnion(docRef.id),
+      const userDocRef = doc(db, "Users", userId);
+      await updateDoc(userDocRef, {
+        ideasCreated: serverTimestamp(), // If storing the timestamp of creation
+        // If storing the idea IDs in an array
+        ideasCreated: arrayUnion(ideaDocRef.id),
       });
 
       // Clear the form and provide feedback
-      setSelectedFile(null);
-      setFilePreview(null);
-      setDescription("");
-      alert("Plant uploaded successfully!");
+      setIdeaTitle("");
+      setIdeaDescription("");
+      alert("Idea Sparked successfully!");
     } catch (error) {
-      console.error("Error uploading file: ", error);
-      setError("Error uploading file");
+      console.error("Error submitting idea: ", error);
+      setError("Error submitting idea");
     }
   };
 
@@ -184,17 +102,21 @@ const PlantUploadForm = () => {
     <StyledForm onSubmit={handleSubmit}>
       <BackButton backRoute={handleBack} />
       <LogoutButton />
-      <FileInputLabel htmlFor="file-input">
-        <FileInput id="file-input" type="file" onChange={handleFileChange} />
-      </FileInputLabel>
-      {filePreview && <ImagePreview src={filePreview} alt="Preview" />}
-      <TextInput2
-        placeholder="Name your plant!"
-        value={description}
-        onChange={handleDescriptionChange}
+      <Wrapper>
+      <Heading>Spark an Idea</Heading>
+      <TextInput
+        placeholder="Enter your idea title"
+        value={ideaTitle}
+        onChange={handleIdeaTitleChange}
       />
+      <LongTextInput
+          placeholder="Describe your idea"
+          value={ideaDescription}
+          onChange={handleIdeaDescriptionChange}
+        />
       {error && <div>{error}</div>}
-      <Button text="Upload Plant" onClick={handleSubmit} />
+      <Button text="Spark Idea" onClick={handleSubmit} />
+      </Wrapper>
     </StyledForm>
   );
 };

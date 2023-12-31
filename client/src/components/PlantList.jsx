@@ -33,65 +33,40 @@ const GridView = styled.div`
 
 
 const PlantList = () => {
-    const [plants, setPlants] = useState([]);
-    const [timeLeft, setTimeLeft] = useState(3); // 3 days in your desired format
+    const [ideas, setIdeas] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchUserPlants = async () => {
-            const userId = auth.currentUser.uid;
-            const userRef = doc(db, 'Users', userId);
-            const userDoc = await getDoc(userRef);
-
-            if (userDoc.exists()) {
-                const userPlantsIds = userDoc.data().uploadedPlants || [];
-                const plantPromises = userPlantsIds.map(plantId => 
-                    getDoc(doc(db, 'Plants', plantId))
-                );
-                const plantDocs = await Promise.all(plantPromises);
-                const plantsData = plantDocs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                setPlants(plantsData);
-                console.log(plantsData);
-            }
+        const fetchIdeas = async () => {
+            const ideasCollectionRef = collection(db, 'Ideas');
+            const ideasSnapshot = await getDocs(ideasCollectionRef);
+            const ideasData = ideasSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setIdeas(ideasData);
         };
 
-        fetchUserPlants();
+        fetchIdeas();
     }, []);
 
-    const handleUpload = () => {
+    const handleSparkIdea = () => {
         navigate('/upload');
     };
 
-    if (plants.length === 0) {
-        return (
-            <Container>
-                {/* <TimerContainer>
-                    Time left to upload: {timeLeft} days
-                </TimerContainer> */}
-                <Button text="Spark an Idea" onClick={handleUpload} />
-            </Container>
-        );
-    }
-
     return (
         <Container>
+            {ideas.length === 0 && <Button text="Spark an Idea" onClick={handleSparkIdea} />}
             <GridView>
-            {plants.map((plant, index) => (
-                <Card
-                    key={plant.id}
-                    title={plant.description}
-                    description={`Plant Number: ${index + 1}`}
-                    imageUrl={plant.imageURL}
-                />
-            ))}
+                {ideas.map((idea, index) => (
+                    <Card
+                        key={idea.id}
+                        title={idea.title}
+                        description={idea.description}
+                        // Remove imageUrl if not relevant
+                    />
+                ))}
             </GridView>
-            <Button text="Spark an Idea" onClick={handleUpload} />
+            <Button text="Spark an Idea" onClick={handleSparkIdea} />
         </Container>
     );
 };
-
 
 export default PlantList;
