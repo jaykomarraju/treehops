@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, getDoc, doc } from "firebase/firestore"; // Ensure correct import of `doc`
+// import { db } from "../Firebase";
 import { db } from "../Firebase";
 import IdeaCard from "./IdeaCard";
 import IdeaInfo from "./IdeaInfo";
@@ -40,7 +41,22 @@ const PlantFeed = () => {
     const fetchIdeas = async () => {
       const ideasCollectionRef = collection(db, "Ideas");
       const ideasSnapshot = await getDocs(ideasCollectionRef);
-      const ideasData = ideasSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      const ideasDataPromises = ideasSnapshot.docs.map(async (docSnapshot) => { // Renamed variable to 'docSnapshot'
+        const ideaData = docSnapshot.data();
+        const userRef = doc(db, "Users", ideaData.userId); // `doc` function is used correctly here
+        const userDoc = await getDoc(userRef);
+
+        return {
+          id: docSnapshot.id, // Use 'docSnapshot' here
+          title: ideaData.title,
+          description: ideaData.description,
+          creator: userDoc.exists() ? userDoc.data().name : "Unknown",
+          timestamp: ideaData.timestamp.toDate().toLocaleString(),
+        };
+      });
+
+      const ideasData = await Promise.all(ideasDataPromises);
       setIdeas(ideasData);
     };
 
@@ -52,11 +68,13 @@ const PlantFeed = () => {
       <Heading>Ideas Feed</Heading>
       <Grid>
       {ideas.map((idea) => (
-        <IdeaCard key={idea.id} title={idea.title} description={idea.description}>
-          <IdeaInfo title={idea.title} description={idea.description} />
-          {/* Optionally add more details */}
-        </IdeaCard>
-      ))}
+    <IdeaCard
+      key={idea.id}
+      title={idea.title}
+      description={idea.description}
+      creator={idea.creator}
+    />
+  ))}
       </Grid>
     </FeedContainer>
   );
