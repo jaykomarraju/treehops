@@ -35,7 +35,7 @@ const NominationPage = () => {
         
                 if (userSnap.exists()) {
                     const userData = userSnap.data();
-                    setHasUploadedPlant(userData.uploadedPlants && userData.uploadedPlants.length > 0);
+                    setHasUploadedPlant(userData.ideasCreated && userData.ideasCreated.length > 0);
                     console.log(hasUploadedPlant)
                 } else {
                     console.log("No such user!");

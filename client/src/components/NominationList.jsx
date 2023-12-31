@@ -160,7 +160,7 @@ const NominationList = ({ hasUploadedPlant }) => {
 
   return (
     <Container>
-      <h3>Your Hoppers</h3>
+      <h3>Your Nominations</h3>
       <Button text="Nominate Candidates" onClick={handleNewNomination} />
       {nominations.length > 0 ? (
         nominations.map((nomination, index) => (

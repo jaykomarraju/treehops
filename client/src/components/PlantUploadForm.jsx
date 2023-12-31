@@ -5,9 +5,11 @@ import TextInput from "./TextInput";
 import BackButton from "./BackButton";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, doc, updateDoc, arrayUnion } from "firebase/firestore";
+
 import { db, auth } from "../Firebase";
 import LongTextInput from "./LongTextInput";
+// import { collection, addDoc, serverTimestamp,  } from "firebase/firestore";
 
 const StyledForm = styled.form`
   display: flex;
@@ -81,7 +83,7 @@ const PlantUploadForm = () => {
       await updateDoc(userDocRef, {
         ideasCreated: serverTimestamp(), // If storing the timestamp of creation
         // If storing the idea IDs in an array
-        ideasCreated: arrayUnion(ideaDocRef.id),
+        ideasCreated: arrayUnion(docRef.id),
       });
 
       // Clear the form and provide feedback

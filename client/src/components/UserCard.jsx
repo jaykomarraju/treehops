@@ -73,8 +73,8 @@ const UserCard = ({ userId }) => {
   }
 
   // Count the number of plants uploaded by the user
-  const plantCount = userDetails.uploadedPlants
-  ? userDetails.uploadedPlants.length
+  const plantCount = userDetails.ideasCreated
+  ? userDetails.ideasCreated.length
   : 0;
 
   return (

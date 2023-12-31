@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import plantIcon from '../assets/plant.png'; // Update the path as needed
+import plantIcon from '../assets/idea.png'; // Update the path as needed
 import nominateIcon from '../assets/nominate.png'; // Update the path as needed
 import profileIcon from '../assets/profile.png'; // Update the path as needed
 import FeedIcon from '../assets/feed.png'; // Update the path as needed
@@ -18,7 +18,7 @@ const MenuWrapper = styled.div`
 `;
 
 const MenuItem = styled.div`
-    background: #159a1f;
+    background: #f79839;
     opacity: 0.75;
     padding: 3px;
     border-radius: 50%;

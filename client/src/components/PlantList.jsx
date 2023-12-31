@@ -31,6 +31,16 @@ const GridView = styled.div`
 
 `;
 
+const Heading = styled.h3`
+    font-family: 'Rethink Sans', sans-serif;
+    font-size: 28px;
+    margin: 20px;
+    margin-bottom: 40px;
+    text-align: center;
+    color: #111;
+`;
+
+
 
 const PlantList = () => {
     const [ideas, setIdeas] = useState([]);
@@ -53,6 +63,7 @@ const PlantList = () => {
 
     return (
         <Container>
+            <Heading>My Ideas</Heading>
             {ideas.length === 0 && <Button text="Spark an Idea" onClick={handleSparkIdea} />}
             <GridView>
                 {ideas.map((idea, index) => (

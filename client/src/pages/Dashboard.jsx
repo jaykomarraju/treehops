@@ -18,7 +18,7 @@ const DashboardContainer = styled.div`
     margin-bottom: 150px;
 
     @media (max-width: 768px) {
-        margin-top: 100px;
+        margin-top: 60px;
     }
 `;
 
