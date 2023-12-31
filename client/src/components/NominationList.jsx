@@ -134,11 +134,10 @@ const NominationList = ({ hasUploadedPlant }) => {
       <Container>
         <UploadPrompt>
           <UploadPromptMessage>
-            You need to upload a picture of your plant to start nominating
-            others.
+            You need to spark an idea to invite others!
           </UploadPromptMessage>
           <Button
-            text="Upload Plant"
+            text="Spark an Idea"
             onClick={() => navigate("/upload")}
           />
         </UploadPrompt>

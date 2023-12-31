@@ -83,8 +83,9 @@ const UserCard = ({ userId }) => {
       <UserInfo>Name: {userDetails.name}</UserInfo>
       <UserInfo>Phone: {userDetails.phoneNumber}</UserInfo>
       <UserInfo>Email: {userDetails.email}</UserInfo>
-      <UserInfo>Plants Uploaded: {plantCount}</UserInfo>
-      <UserInfo>Hopped By: {hoppedByName}</UserInfo>
+      <UserInfo>Ideas Sparked: {plantCount}</UserInfo>
+      <UserInfo>Party Affiliation: {userDetails.party}</UserInfo>
+      {/* <UserInfo>Hopped By: {hoppedByName}</UserInfo> */}
     </CardContainer>
   );
 };

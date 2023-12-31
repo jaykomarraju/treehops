@@ -36,7 +36,7 @@ const Dashboard = ({ userId }) => {
         <DashboardContainer>
             <LogoutButton />
             {/* <UserCard userId={userId} /> */}
-            <ProgressTracker />
+            {/* <ProgressTracker /> */}
             <PlantList />
             {/* <NominationList hasUploadedPlant={hasUploadedPlant} /> */}
             <BottomNavBar />

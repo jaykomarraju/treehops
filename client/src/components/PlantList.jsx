@@ -68,10 +68,10 @@ const PlantList = () => {
     if (plants.length === 0) {
         return (
             <Container>
-                <TimerContainer>
+                {/* <TimerContainer>
                     Time left to upload: {timeLeft} days
-                </TimerContainer>
-                <Button text="Upload Plant Picture" onClick={handleUpload} />
+                </TimerContainer> */}
+                <Button text="Spark an Idea" onClick={handleUpload} />
             </Container>
         );
     }
@@ -88,7 +88,7 @@ const PlantList = () => {
                 />
             ))}
             </GridView>
-            <Button text="Upload Plant Picture" onClick={handleUpload} />
+            <Button text="Spark an Idea" onClick={handleUpload} />
         </Container>
     );
 };
