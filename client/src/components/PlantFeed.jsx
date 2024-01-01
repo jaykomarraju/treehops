@@ -5,6 +5,8 @@ import { collection, getDocs, getDoc, doc } from "firebase/firestore"; // Ensure
 import { db } from "../Firebase";
 import IdeaCard from "./IdeaCard";
 import IdeaInfo from "./IdeaInfo";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+
 
 const FeedContainer = styled.div`
   display: flex;
@@ -36,13 +38,15 @@ const Grid = styled.div`
 
 const PlantFeed = () => {
   const [ideas, setIdeas] = useState([]);
+  const navigate = useNavigate(); // Use navigate hook
 
   useEffect(() => {
     const fetchIdeas = async () => {
       const ideasCollectionRef = collection(db, "Ideas");
       const ideasSnapshot = await getDocs(ideasCollectionRef);
-      
-      const ideasDataPromises = ideasSnapshot.docs.map(async (docSnapshot) => { // Renamed variable to 'docSnapshot'
+
+      const ideasDataPromises = ideasSnapshot.docs.map(async (docSnapshot) => {
+        // Renamed variable to 'docSnapshot'
         const ideaData = docSnapshot.data();
         const userRef = doc(db, "Users", ideaData.userId); // `doc` function is used correctly here
         const userDoc = await getDoc(userRef);
@@ -63,18 +67,23 @@ const PlantFeed = () => {
     fetchIdeas();
   }, []);
 
+  const handleIdeaClick = (ideaId) => {
+    navigate(`/idea/${ideaId}`); // Navigate to the IdeaDetailPage
+  };
+
   return (
     <FeedContainer>
       <Heading>Ideas Feed</Heading>
       <Grid>
-      {ideas.map((idea) => (
-    <IdeaCard
-      key={idea.id}
-      title={idea.title}
-      description={idea.description}
-      creator={idea.creator}
-    />
-  ))}
+        {ideas.map((idea) => (
+          <IdeaCard
+            key={idea.id}
+            title={idea.title}
+            description={idea.description}
+            creator={idea.creator}
+            onClick={() => handleIdeaClick(idea.id)}
+          />
+        ))}
       </Grid>
     </FeedContainer>
   );

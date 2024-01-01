@@ -12,6 +12,7 @@ import RequireAuth from "./context/RequireAuth";
 import { AuthProvider } from "./context/AuthContext";
 import FeedPage from "./pages/FeedPage";
 import OnboardingPage from "./pages/OnboardingPage";
+import IdeaDetailPage from "./components/IdeaDetailPage";
 
 function App() {
   return (
@@ -28,6 +29,14 @@ function App() {
             </RequireAuth>
           }
         />
+        <Route
+            path="/idea/:ideaId"
+            element={
+              <RequireAuth>
+                <IdeaDetailPage />
+              </RequireAuth>
+            }
+          />
         <Route
           path="/upload"
           element={

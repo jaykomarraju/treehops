@@ -47,14 +47,28 @@ const PlantList = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchIdeas = async () => {
-            const ideasCollectionRef = collection(db, 'Ideas');
-            const ideasSnapshot = await getDocs(ideasCollectionRef);
-            const ideasData = ideasSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setIdeas(ideasData);
+        const fetchUserIdeas = async () => {
+            if (auth.currentUser) {
+                const userId = auth.currentUser.uid;
+                const userRef = doc(db, "Users", userId);
+                const userDoc = await getDoc(userRef);
+
+                if (userDoc.exists()) {
+                    const userIdeasIds = userDoc.data().ideasCreated || [];
+                    const ideasPromises = userIdeasIds.map(ideaId => 
+                        getDoc(doc(db, 'Ideas', ideaId))
+                    );
+                    const ideasDocs = await Promise.all(ideasPromises);
+                    const ideasData = ideasDocs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    setIdeas(ideasData);
+                }
+            }
         };
 
-        fetchIdeas();
+        fetchUserIdeas();
     }, []);
 
     const handleSparkIdea = () => {
@@ -64,7 +78,6 @@ const PlantList = () => {
     return (
         <Container>
             <Heading>My Ideas</Heading>
-            {ideas.length === 0 && <Button text="Spark an Idea" onClick={handleSparkIdea} />}
             <GridView>
                 {ideas.map((idea, index) => (
                     <Card

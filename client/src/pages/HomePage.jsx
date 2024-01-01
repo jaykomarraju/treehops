@@ -19,6 +19,10 @@ const MissionStatement = styled.h2`
     // padding: 20px;
     text-align: center;
     // margin: 20px;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
 `;
 
 const MissionStatement2Blue = styled.h2`
