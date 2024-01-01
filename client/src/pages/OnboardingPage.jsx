@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import OnboardingSlide from '../components/OnboardingSlide';
 import Button from '../components/Button'; // Assuming Button is a component you have already
 import { useNavigate } from 'react-router-dom';
-import image1 from '../assets/logoImage.png';
-import image2 from '../assets/image2.png';
-import image3 from '../assets/image3.png';
-import image4 from '../assets/image4.png';
-import image5 from '../assets/image5.png';
-import image6 from '../assets/image6.png';
+import image1 from '../assets/ideas2024.png';
+import image2 from '../assets/debate.png';
+import image3 from '../assets/balance.png';
+import image4 from '../assets/spark.png';
+import image5 from '../assets/election.png';
+import image6 from '../assets/thinkers.png';
 
 
 const OnboardingContainer = styled.div`
@@ -20,13 +20,31 @@ const OnboardingContainer = styled.div`
 `;
 
 const slides = [
-  { image: image1, text: 'Welcome to Tree Hops! Join our mission to greenify the world, one plant at a time.' },
-  { image: image2, text: 'Our goal? Share a million plant pictures to raise environmental awareness!' },
-  { image: image3, text: 'Snap a plant, share it, earn points! Each plant picture equals 10 points.' },
-  { image: image4, text: 'Nominate friends and earn more! Get 15 points for each friend who joins and posts.' },
-  { image: image5, text: 'Climb the leaderboard with every plant and nomination. Be a top eco-warrior!' },
-  { image: image6, text: 'Each plant shared contributes to a greener planet. Your small steps make a big difference!' },
-  // ... add more slides here
+  { 
+    image: image1, 
+    text: 'Welcome to ideas2024.org - A platform where your ideas inspire change and spark debate.' 
+  },
+  { 
+    image: image2, 
+    text: 'Explore diverse perspectives. Every idea can be debated from "for" and "against" viewpoints.' 
+  },
+  { 
+    image: image3, 
+    text: 'Contribute to balanced discussions. Share your thoughts on either side of the debate.' 
+  },
+  { 
+    image: image4, 
+    text: 'Spark your own idea or join existing debates. Engage in meaningful discussions and expand your understanding.' 
+  },
+  { 
+    image: image5, 
+    text: 'Election Year Focus: Participate in discussions on political topics, influencing and learning from the community.' 
+  },
+  { 
+    image: image6, 
+    text: 'Join a community of thinkers. Collaborate, debate, and grow in a platform built for open and democratic dialogue.' 
+  },
+  // ... add more slides if necessary
 ];
 
 const OnboardingPage = () => {
