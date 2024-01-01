@@ -159,14 +159,14 @@ const CommentSection = ({ ideaId }) => {
           id: 1,
           text: "This is a comment for the idea",
           type: "for",
-          user: "user1",
+          author: "user1",
           timestamp: "2021-10-01T12:00:00"
         },
         {
             id: 3,
             text: "This is a comment for the idea 2",
             type: "for",
-            user: "user2",
+            author: "user2",
             timestamp: "2021-10-01T12:00:00"
         }
       ]);
@@ -176,14 +176,14 @@ const CommentSection = ({ ideaId }) => {
           id: 2,
           text: "This is a comment against the idea",
           type: "against",
-          user: "user3",
+          author: "user3",
             timestamp: "2021-10-01T12:00:00"
         },
         {
             id: 4,
             text: "This is a comment against the idea 2",
             type: "against",
-            user: "user4",
+            author: "user4",
             timestamp: "2021-10-01T12:00:00"
         }
         ]);
@@ -212,12 +212,12 @@ const CommentSection = ({ ideaId }) => {
       </Flexer>
       <SectionTitle>For the Idea</SectionTitle>
       {forComments.map((comment) => (
-        <Comment key={comment.id} text={comment.text} author={comment.author} />
+        <Comment key={comment.id} text={comment.text} author={comment.author} timestamp={comment.timestamp} />
       ))}
 
       <SectionTitle>Against the Idea</SectionTitle>
       {againstComments.map((comment) => (
-        <Comment key={comment.id} text={comment.text} author={comment.author} />
+        <Comment key={comment.id} text={comment.text} author={comment.author} timestamp={comment.timestamp}/>
       ))}
     </CommentsContainer>
   );
