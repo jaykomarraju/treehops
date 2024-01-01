@@ -7,7 +7,6 @@ import IdeaCard from "./IdeaCard";
 import IdeaInfo from "./IdeaInfo";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-
 const FeedContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -61,7 +60,9 @@ const PlantFeed = () => {
       });
 
       const ideasData = await Promise.all(ideasDataPromises);
-      ideasData.sort((a, b) => b.timestamp - a.timestamp); // Sort by timestamp
+      // Convert timestamp strings to Date objects and then sort
+      ideasData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
       setIdeas(ideasData);
     };
 
