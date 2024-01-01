@@ -61,6 +61,7 @@ const PlantFeed = () => {
       });
 
       const ideasData = await Promise.all(ideasDataPromises);
+      ideasData.sort((a, b) => b.timestamp - a.timestamp); // Sort by timestamp
       setIdeas(ideasData);
     };
 
