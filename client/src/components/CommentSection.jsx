@@ -145,6 +145,38 @@ const Selector = styled.select`
   }
 `;
 
+const BarLabel = styled.span`
+  font-family: "Rethink Sans", sans-serif;
+  font-size: 14px;
+  color: #111;
+`;
+
+const BarContainer = styled.div`
+  width: 50%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+
+const CommentBar = styled.div`
+  margin: 20px 0;
+  width: 50%;
+  max-width: 600px;
+  background-color: #e0e0e0; // Default grey background
+  border-radius: 10px;
+  height: 20px;
+  display: flex;
+  overflow: hidden; // To ensure rounded corners
+`;
+
+const BarSection = styled.div`
+  height: 100%;
+  transition: width 0.4s ease-in-out;
+`;
+
+
 const Flexer = styled.div`
   display: flex;
   flex-direction: row;
@@ -157,6 +189,8 @@ const CommentSection = ({ ideaId }) => {
   const [againstComments, setAgainstComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [commentSide, setCommentSide] = useState("for"); // 'for' or 'against'
+
+  
 
   const fetchComments = async () => {
     const forCommentsQuery = query(
@@ -213,6 +247,17 @@ const CommentSection = ({ ideaId }) => {
     }
   };
   
+ // Function to calculate bar widths
+ const calculateBarWidths = () => {
+  const totalComments = forComments.length + againstComments.length;
+  if (totalComments === 0) return { forWidth: 0, againstWidth: 0 };
+  const forWidth = (forComments.length / totalComments) * 100;
+  const againstWidth = 100 - forWidth;
+  return { forWidth, againstWidth };
+};
+
+const { forWidth, againstWidth } = calculateBarWidths();
+
 
   useEffect(() => {
     fetchComments();
@@ -265,6 +310,17 @@ const CommentSection = ({ ideaId }) => {
         </Selector>
         <PostButton onClick={postComment}>Post Comment</PostButton>
       </Flexer>
+     {/* Comment Bar with Labels */}
+     <BarContainer>
+        <BarLabel>For</BarLabel>
+        <CommentBar>
+          {forWidth > 0 && <BarSection style={{ width: `${forWidth}%`, backgroundColor: '#4caf50' }} />}
+          {againstWidth > 0 && <BarSection style={{ width: `${againstWidth}%`, backgroundColor: '#f44336' }} />}
+        </CommentBar>
+        <BarLabel>Against</BarLabel>
+      </BarContainer>
+
+
       <SectionTitle>For the Idea</SectionTitle>
       {forComments.map((comment) => (
         <Comment
@@ -281,7 +337,7 @@ const CommentSection = ({ ideaId }) => {
           key={comment.id}
           text={comment.text}
           author={comment.author}
-          timestamp={comment.timestamp}
+          timestamp={comment.timestamp.toDate().toLocaleString()}
         />
       ))}
     </CommentsContainer>
