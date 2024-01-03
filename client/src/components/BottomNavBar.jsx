@@ -51,11 +51,11 @@ const BottomNavBar = () => {
                     <Icon src={FeedIcon} alt="Feed" />
                 </MenuItem>
             </Link>
-            <Link to="/nominations">
+            {/* <Link to="/nominations">
                 <MenuItem>
                     <Icon src={nominateIcon} alt="Nominations" />
                 </MenuItem>
-            </Link>
+            </Link> */}
             <Link to="/profile">
                 <MenuItem>
                     <Icon src={profileIcon} alt="Profile" />
