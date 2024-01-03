@@ -7,8 +7,8 @@ import {
   where,
   getDocs,
   serverTimestamp,
-    doc,
-    getDoc
+  doc,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "../Firebase";
 import Comment from "./Comment";
@@ -159,7 +159,6 @@ const BarContainer = styled.div`
   justify-content: space-between;
 `;
 
-
 const CommentBar = styled.div`
   margin: 20px 0;
   width: 50%;
@@ -176,7 +175,6 @@ const BarSection = styled.div`
   transition: width 0.4s ease-in-out;
 `;
 
-
 const Flexer = styled.div`
   display: flex;
   flex-direction: row;
@@ -184,13 +182,12 @@ const Flexer = styled.div`
   align-items: center;
 `;
 
+
 const CommentSection = ({ ideaId }) => {
   const [forComments, setForComments] = useState([]);
   const [againstComments, setAgainstComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [commentSide, setCommentSide] = useState("for"); // 'for' or 'against'
-
-  
 
   const fetchComments = async () => {
     const forCommentsQuery = query(
@@ -203,7 +200,7 @@ const CommentSection = ({ ideaId }) => {
       where("ideaId", "==", ideaId),
       where("side", "==", "against")
     );
-  
+
     try {
       // Function to fetch user data based on userId
       const fetchUserData = async (userId) => {
@@ -211,7 +208,7 @@ const CommentSection = ({ ideaId }) => {
         const userSnap = await getDoc(userRef);
         return userSnap.exists() ? userSnap.data() : null;
       };
-  
+
       // Fetch and process "for" comments
       const forCommentsSnapshot = await getDocs(forCommentsQuery);
       const forCommentsData = await Promise.all(
@@ -225,7 +222,7 @@ const CommentSection = ({ ideaId }) => {
           };
         })
       );
-  
+
       // Fetch and process "against" comments
       const againstCommentsSnapshot = await getDocs(againstCommentsQuery);
       const againstCommentsData = await Promise.all(
@@ -239,25 +236,24 @@ const CommentSection = ({ ideaId }) => {
           };
         })
       );
-  
+
       setForComments(forCommentsData);
       setAgainstComments(againstCommentsData);
     } catch (error) {
       console.error("Error fetching comments: ", error);
     }
   };
-  
- // Function to calculate bar widths
- const calculateBarWidths = () => {
-  const totalComments = forComments.length + againstComments.length;
-  if (totalComments === 0) return { forWidth: 0, againstWidth: 0 };
-  const forWidth = (forComments.length / totalComments) * 100;
-  const againstWidth = 100 - forWidth;
-  return { forWidth, againstWidth };
-};
 
-const { forWidth, againstWidth } = calculateBarWidths();
+  // Function to calculate bar widths
+  const calculateBarWidths = () => {
+    const totalComments = forComments.length + againstComments.length;
+    if (totalComments === 0) return { forWidth: 0, againstWidth: 0 };
+    const forWidth = (forComments.length / totalComments) * 100;
+    const againstWidth = 100 - forWidth;
+    return { forWidth, againstWidth };
+  };
 
+  const { forWidth, againstWidth } = calculateBarWidths();
 
   useEffect(() => {
     fetchComments();
@@ -310,38 +306,45 @@ const { forWidth, againstWidth } = calculateBarWidths();
         </Selector>
         <PostButton onClick={postComment}>Post Comment</PostButton>
       </Flexer>
-     {/* Comment Bar with Labels */}
-     <BarContainer>
+      {/* Comment Bar with Labels */}
+      <BarContainer>
         <BarLabel>For</BarLabel>
         <CommentBar>
-          {forWidth > 0 && <BarSection style={{ width: `${forWidth}%`, backgroundColor: '#4caf50' }} />}
-          {againstWidth > 0 && <BarSection style={{ width: `${againstWidth}%`, backgroundColor: '#f44336' }} />}
+          {forWidth > 0 && (
+            <BarSection
+              style={{ width: `${forWidth}%`, backgroundColor: "#4caf50" }}
+            />
+          )}
+          {againstWidth > 0 && (
+            <BarSection
+              style={{ width: `${againstWidth}%`, backgroundColor: "#f44336" }}
+            />
+          )}
         </CommentBar>
         <BarLabel>Against</BarLabel>
       </BarContainer>
 
-
-      <SectionTitle>For the Idea</SectionTitle>
-      {forComments.map((comment) => (
-        <Comment
-          key={comment.id}
-          text={comment.text}
-          author={comment.author}
-          timestamp={comment.timestamp.toDate().toLocaleString()}
-        />
-      ))}
-
-      <SectionTitle>Against the Idea</SectionTitle>
-      {againstComments.map((comment) => (
-        <Comment
-          key={comment.id}
-          text={comment.text}
-          author={comment.author}
-          timestamp={comment.timestamp.toDate().toLocaleString()}
-        />
-      ))}
+        <SectionTitle>For the Idea</SectionTitle>
+        {forComments.map((comment) => (
+          <Comment
+            key={comment.id}
+            text={comment.text}
+            author={comment.author}
+            timestamp={comment.timestamp.toDate().toLocaleString()}
+          />
+        ))}
+        <SectionTitle>Against the Idea</SectionTitle>
+        {againstComments.map((comment) => (
+          <Comment
+            key={comment.id}
+            text={comment.text}
+            author={comment.author}
+            timestamp={comment.timestamp.toDate().toLocaleString()}
+          />
+        ))}
     </CommentsContainer>
   );
 };
+
 
 export default CommentSection;
